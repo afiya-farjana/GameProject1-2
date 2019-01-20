@@ -45,8 +45,9 @@ public:
     Text lifeText;
     ostringstream scr;
     ostringstream lif;
+    Text pauseText;
 
-    bool IsMovingUp=false,IsMovingDown=false,IsMovingLeft=false,IsMovingRight=false,Fire=false;
+    bool IsMovingUp=false,IsMovingDown=false,IsMovingLeft=false,IsMovingRight=false,Fire=false,pause=false,running=true;
     int ex[6],ey[6],i,j,count=0,score=0,life=3,enemyspeed_x[6],enemyspeed_y[6];
     void processevents();
     void handlePlayerInput(Keyboard::Key key,bool isPressed);
@@ -119,6 +120,11 @@ MediumGame::MediumGame()
     lifeText.setPosition(200,10);
     lifeText.setString(lif.str());
 
+    pauseText.setFont(gameFont);
+    pauseText.setCharacterSize(60);
+    pauseText.setPosition(150,240);
+    pauseText.setString("Press Esc to continue");
+
 }
 
 void MediumGame::run()
@@ -190,6 +196,21 @@ void MediumGame::update()
         if(spaceship.getPosition().x > 810)
             movement.x-=10;
     }
+    if(Keyboard::isKeyPressed(Keyboard::Escape))
+    {
+        if(running)
+        {
+            sleep(milliseconds(100));
+            pause=true;
+            running=false;
+        }
+        else if(pause)
+        {
+            sleep(milliseconds(100));
+            running =true;
+            pause = false;
+        }
+    }
     //firing
     if(Fire)
     {
@@ -226,9 +247,11 @@ void MediumGame::update()
     //enemy movement
     for(i=0; i<6; i++)
     {
-        if(enemy[i].getPosition().x<0){
+        if(enemy[i].getPosition().x<0)
+        {
             enemy[i].setPosition(960+i*40,ey[i]);
-            enemyspeed_y[i]=0; }
+            enemyspeed_y[i]=0;
+        }
         if(enemy[i].getPosition().x<960)
         {
             enemyspeed_y[i]-=1;
@@ -239,11 +262,11 @@ void MediumGame::update()
         }
         if(enemy[i].getGlobalBounds().intersects(spaceship.getGlobalBounds()))
         {
-                life--;
-                lif.str("");
-                lif << "Life: " << life;
-                lifeText.setString(lif.str());
-                enemy[i].setPosition(960+rand()%300,ey[i]);
+            life--;
+            lif.str("");
+            lif << "Life: " << life;
+            lifeText.setString(lif.str());
+            enemy[i].setPosition(960+rand()%300,ey[i]);
         }
         enemy[i].move(enemyspeed_x[i],enemyspeed_y[i]);
     }
@@ -252,13 +275,18 @@ void MediumGame::update()
 void MediumGame::render()
 {
     app.clear();
-    app.draw(background);
-    app.draw(scoreText);
-    app.draw(lifeText);
-    app.draw(spaceship);
-    for(i=0; i<6; i++)
-        app.draw(enemy[i]);
-    for(i=0; i<count; i++)
-        app.draw(amo[i]);
+    if(pause)
+        app.draw(pauseText);
+    else if(running)
+    {
+        app.draw(background);
+        app.draw(scoreText);
+        app.draw(lifeText);
+        app.draw(spaceship);
+        for(i=0; i<6; i++)
+            app.draw(enemy[i]);
+        for(i=0; i<count; i++)
+            app.draw(amo[i]);
+    }
     app.display();
 }

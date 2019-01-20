@@ -44,10 +44,11 @@ public:
     Text lifeText;
     ostringstream scr;
     ostringstream lif;
+    Text pauseText;
 
     Clock clk;
 
-    bool IsMovingUp=false,IsMovingDown=false,IsMovingLeft=false,IsMovingRight=false,Fire=false;
+    bool IsMovingUp=false,IsMovingDown=false,IsMovingLeft=false,IsMovingRight=false,Fire=false,pause=false,running=true;
     int ex[6],ey[6],i,j,count=0,score=0,life=3,enemyspeed=-5;
 
     void processevents();
@@ -115,6 +116,11 @@ EasyGame::EasyGame()
     lifeText.setCharacterSize(30);
     lifeText.setPosition(200,10);
     lifeText.setString(lif.str());
+
+    pauseText.setFont(gameFont);
+    pauseText.setCharacterSize(60);
+    pauseText.setPosition(150,240);
+    pauseText.setString("Press Esc to continue");
 
 }
 
@@ -187,6 +193,21 @@ void EasyGame::update()
         if(spaceship.getPosition().x > 810)
             movement.x-=10;
     }
+    if(Keyboard::isKeyPressed(Keyboard::Escape))
+    {
+        if(running)
+        {
+            sleep(milliseconds(100));
+            pause=true;
+            running=false;
+        }
+        else if(pause)
+        {
+            sleep(milliseconds(100));
+            running =true;
+            pause = false;
+        }
+    }
     //firing
     if(Fire)
     {
@@ -228,11 +249,11 @@ void EasyGame::update()
 
         if(enemy[i].getGlobalBounds().intersects(spaceship.getGlobalBounds()))
         {
-                life--;
-                lif.str("");
-                lif << "Life: " << life;
-                lifeText.setString(lif.str());
-                enemy[i].setPosition(960+rand()%300,ey[i]);
+            life--;
+            lif.str("");
+            lif << "Life: " << life;
+            lifeText.setString(lif.str());
+            enemy[i].setPosition(960+rand()%300,ey[i]);
         }
     }
     if(clk.getElapsedTime().asSeconds()>10)
@@ -246,13 +267,21 @@ void EasyGame::update()
 void EasyGame::render()
 {
     app.clear();
-    app.draw(background);
-    app.draw(scoreText);
-    app.draw(lifeText);
-    app.draw(spaceship);
-    for(i=0; i<6; i++)
-        app.draw(enemy[i]);
-    for(i=0; i<count; i++)
-        app.draw(amo[i]);
+    if(pause)
+    {
+        app.draw(pauseText);
+    }
+    else if(running)
+    {
+
+        app.draw(background);
+        app.draw(scoreText);
+        app.draw(lifeText);
+        app.draw(spaceship);
+        for(i=0; i<6; i++)
+            app.draw(enemy[i]);
+        for(i=0; i<count; i++)
+            app.draw(amo[i]);
+    }
     app.display();
 }
