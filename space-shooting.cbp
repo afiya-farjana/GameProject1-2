@@ -85,8 +85,10 @@
 		<Unit filename="bin/Release/sfml-system-d-2.dll" />
 		<Unit filename="bin/Release/sfml-window-2.dll" />
 		<Unit filename="bin/Release/sfml-window-d-2.dll" />
-		<Unit filename="game.h" />
+		<Unit filename="easy.h" />
+		<Unit filename="hard.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="medium.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

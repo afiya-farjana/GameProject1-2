@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1541716213 source:c:\users\hp\documents\github\gameproject1-2\collision.cpp
+1541716213 source:c:\users\hp\desktop\coding\project 150\collision.cpp
 	<SFML/Graphics.hpp>
 	<map>
 	"collision.h"
@@ -413,13 +413,15 @@
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1541716583 c:\users\hp\documents\github\gameproject1-2\collision.h
+1547125365 c:\users\hp\desktop\coding\project 150\collision.h
 
-1541716430 source:c:\users\hp\documents\github\gameproject1-2\main.cpp
-	<SFML/Window.hpp>
+1547960504 source:c:\users\hp\desktop\coding\project 150\main.cpp
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
-	"game.h"
+	<SFML/Window.hpp>
+	"easy.h"
+	"medium.h"
+	"hard.h"
 
 1525797620 c:\program files (x86)\codeblocks\sfml\include\sfml\audio.hpp
 	<SFML/System.hpp>
@@ -525,10 +527,29 @@
 	<SFML/Audio/Export.hpp>
 	<string>
 
-1541853704 c:\users\hp\documents\github\gameproject1-2\game.h
+1547045280 c:\users\hp\desktop\coding\project 150\game.h
 	<SFML/Window.hpp>
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
 	<bits/stdc++.h>
 	"Collision.h"
+
+1547960504 c:\users\hp\desktop\coding\project 150\easy.h
+	<SFML/Window.hpp>
+	<SFML/Graphics.hpp>
+	<SFML/Audio.hpp>
+	<bits/stdc++.h>
+
+1547958993 c:\users\hp\desktop\coding\project 150\medium.h
+	<SFML/Window.hpp>
+	<SFML/Graphics.hpp>
+	<SFML/Audio.hpp>
+	<bits/stdc++.h>
+	"Collision.h"
+
+1547960504 c:\users\hp\desktop\coding\project 150\hard.h
+	<SFML/Window.hpp>
+	<SFML/Graphics.hpp>
+	<SFML/Audio.hpp>
+	<bits/stdc++.h>
 
