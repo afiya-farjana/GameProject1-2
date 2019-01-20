@@ -41,8 +41,14 @@ public:
 
     Clock clk;
 
+    Font gameFont;
+    Text scoreText;
+    Text lifeText;
+    ostringstream scr;
+    ostringstream lif;
+
     bool IsMovingUp=false,IsMovingDown=false,IsMovingLeft=false,IsMovingRight=false,Fire=false;
-    int ex[6],ey[6],i,j,count=0,score=0,enemyspeed_x[6],enemyspeed_y[6],en_amo_speed;
+    int ex[6],ey[6],i,j,count=0,score=0,life=3,enemyspeed_x[6],enemyspeed_y[6],en_amo_speed;
     void processevents();
     void handlePlayerInput(Keyboard::Key key,bool isPressed);
     void update();
@@ -103,6 +109,21 @@ HardGame::HardGame()
     //blast after enemy death
     blst.loadFromFile("blast.wav");
     blast.setBuffer(blst);
+
+    gameFont.loadFromFile("Pacifico.ttf");
+
+    scr << "Score: " << score;
+    lif << "Life: " << life;
+
+    scoreText.setFont(gameFont);
+    scoreText.setCharacterSize(30);
+    scoreText.setPosition(10,10);
+    scoreText.setString(scr.str());
+
+    lifeText.setFont(gameFont);
+    lifeText.setCharacterSize(30);
+    lifeText.setPosition(200,10);
+    lifeText.setString(lif.str());
 
 }
 
@@ -197,6 +218,11 @@ void HardGame::update()
                 enemy[j].setPosition(960+rand()%300,ey[j]);
                 enemyspeed_y[j]=0;
                 amo[i].setPosition(345,900);
+
+                score++;
+                scr.str("");
+                scr << "Score: " << score;
+                scoreText.setString(scr.str());
             }
         }
 
@@ -206,10 +232,29 @@ void HardGame::update()
     //enemy movement
     for(i=0; i<6; i++)
     {
+        for(j=0; j<6; j++)
+        {
+            if(enemy[i].getGlobalBounds().intersects(en_amo[j].getGlobalBounds()))
+            {
+               life--;
+                lif.str("");
+                lif << "Life: " << life;
+                lifeText.setString(lif.str());
+                enemy[i].setPosition(960+rand()%300,ey[i]);
+            }
+        }
         if(enemy[i].getPosition().x<0)
         {
             enemy[i].setPosition(960+i*40,ey[i]);
             enemyspeed_y[i]=0;
+        }
+        if(enemy[i].getGlobalBounds().intersects(spaceship.getGlobalBounds()))
+        {
+                life--;
+                lif.str("");
+                lif << "Life: " << life;
+                lifeText.setString(lif.str());
+                enemy[i].setPosition(960+rand()%300,ey[i]);
         }
         else if(enemy[i].getPosition().x<960)
         {
@@ -238,6 +283,8 @@ void HardGame::render()
 {
     app.clear();
     app.draw(background);
+    app.draw(scoreText);
+    app.draw(lifeText);
     app.draw(spaceship);
     for(i=0; i<6; i++)
     {

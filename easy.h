@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include<SFML/Audio.hpp>
 #include<bits/stdc++.h>
+#include<sstream>
 //#include"Collision.h"
 
 using namespace sf;
@@ -38,10 +39,16 @@ public:
     SoundBuffer blst;
     Sound blast;
 
+    Font gameFont;
+    Text scoreText;
+    Text lifeText;
+    ostringstream scr;
+    ostringstream lif;
+
     Clock clk;
 
     bool IsMovingUp=false,IsMovingDown=false,IsMovingLeft=false,IsMovingRight=false,Fire=false;
-    int ex[6],ey[6],i,j,count=0,score=0,enemyspeed=-5;
+    int ex[6],ey[6],i,j,count=0,score=0,life=3,enemyspeed=-5;
 
     void processevents();
     void handlePlayerInput(Keyboard::Key key,bool isPressed);
@@ -93,6 +100,21 @@ EasyGame::EasyGame()
     //blast after enemy death
     blst.loadFromFile("blast.wav");
     blast.setBuffer(blst);
+
+    gameFont.loadFromFile("Pacifico.ttf");
+
+    scr << "Score: " << score;
+    lif << "Life: " << life;
+
+    scoreText.setFont(gameFont);
+    scoreText.setCharacterSize(30);
+    scoreText.setPosition(10,10);
+    scoreText.setString(scr.str());
+
+    lifeText.setFont(gameFont);
+    lifeText.setCharacterSize(30);
+    lifeText.setPosition(200,10);
+    lifeText.setString(lif.str());
 
 }
 
@@ -181,11 +203,16 @@ void EasyGame::update()
         for(j=0; j<6; j++)
         {
             if(amo[i].getGlobalBounds().intersects(enemy[j].getGlobalBounds()))
-            //if(Collision::PixelPerfectTest(amo[i],enemy[j]))
+                //if(Collision::PixelPerfectTest(amo[i],enemy[j]))
             {
                 blast.play();
                 enemy[j].setPosition(960+rand()%300,ey[j]);
                 amo[i].setPosition(345,900);
+
+                score++;
+                scr.str("");
+                scr << "Score: " << score;
+                scoreText.setString(scr.str());
             }
         }
 
@@ -198,6 +225,15 @@ void EasyGame::update()
         enemy[i].move(enemyspeed,0);
         if(enemy[i].getPosition().x<0)
             enemy[i].setPosition(960+rand()%300,ey[i]);
+
+        if(enemy[i].getGlobalBounds().intersects(spaceship.getGlobalBounds()))
+        {
+                life--;
+                lif.str("");
+                lif << "Life: " << life;
+                lifeText.setString(lif.str());
+                enemy[i].setPosition(960+rand()%300,ey[i]);
+        }
     }
     if(clk.getElapsedTime().asSeconds()>10)
     {
@@ -211,6 +247,8 @@ void EasyGame::render()
 {
     app.clear();
     app.draw(background);
+    app.draw(scoreText);
+    app.draw(lifeText);
     app.draw(spaceship);
     for(i=0; i<6; i++)
         app.draw(enemy[i]);

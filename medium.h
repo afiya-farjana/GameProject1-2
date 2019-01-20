@@ -40,8 +40,14 @@ public:
 
     Clock clk;
 
+    Font gameFont;
+    Text scoreText;
+    Text lifeText;
+    ostringstream scr;
+    ostringstream lif;
+
     bool IsMovingUp=false,IsMovingDown=false,IsMovingLeft=false,IsMovingRight=false,Fire=false;
-    int ex[6],ey[6],i,j,count=0,score=0,enemyspeed_x[6],enemyspeed_y[6];
+    int ex[6],ey[6],i,j,count=0,score=0,life=3,enemyspeed_x[6],enemyspeed_y[6];
     void processevents();
     void handlePlayerInput(Keyboard::Key key,bool isPressed);
     void update();
@@ -97,6 +103,21 @@ MediumGame::MediumGame()
     //blast after enemy death
     blst.loadFromFile("sounds/blast.wav");
     blast.setBuffer(blst);
+
+    gameFont.loadFromFile("Pacifico.ttf");
+
+    scr << "Score: " << score;
+    lif << "Life: " << life;
+
+    scoreText.setFont(gameFont);
+    scoreText.setCharacterSize(30);
+    scoreText.setPosition(10,10);
+    scoreText.setString(scr.str());
+
+    lifeText.setFont(gameFont);
+    lifeText.setCharacterSize(30);
+    lifeText.setPosition(200,10);
+    lifeText.setString(lif.str());
 
 }
 
@@ -191,6 +212,11 @@ void MediumGame::update()
                 enemy[j].setPosition(960+rand()%300,ey[j]);
                 enemyspeed_y[j]=0;
                 amo[i].setPosition(345,900);
+
+                score++;
+                scr.str("");
+                scr << "Score: " << score;
+                scoreText.setString(scr.str());
             }
         }
 
@@ -211,6 +237,14 @@ void MediumGame::update()
             if(enemy[i].getPosition().y<300 && i>=3)
                 enemyspeed_y[i]+=2;
         }
+        if(enemy[i].getGlobalBounds().intersects(spaceship.getGlobalBounds()))
+        {
+                life--;
+                lif.str("");
+                lif << "Life: " << life;
+                lifeText.setString(lif.str());
+                enemy[i].setPosition(960+rand()%300,ey[i]);
+        }
         enemy[i].move(enemyspeed_x[i],enemyspeed_y[i]);
     }
 }
@@ -219,6 +253,8 @@ void MediumGame::render()
 {
     app.clear();
     app.draw(background);
+    app.draw(scoreText);
+    app.draw(lifeText);
     app.draw(spaceship);
     for(i=0; i<6; i++)
         app.draw(enemy[i]);
