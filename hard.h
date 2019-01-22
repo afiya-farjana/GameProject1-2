@@ -254,16 +254,13 @@ void HardGame::update()
     //enemy movement
     for(i=0; i<6; i++)
     {
-        for(j=0; j<6; j++)
+        if(en_amo[i].getGlobalBounds().intersects(spaceship.getGlobalBounds()))
         {
-            if(enemy[i].getGlobalBounds().intersects(en_amo[j].getGlobalBounds()))
-            {
-                life--;
-                lif.str("");
-                lif << "Life: " << life;
-                lifeText.setString(lif.str());
-                enemy[i].setPosition(960+rand()%300,ey[i]);
-            }
+            life--;
+            lif.str("");
+            lif << "Life: " << life;
+            lifeText.setString(lif.str());
+            en_amo[i].setPosition(960+rand()%300,ey[i]);
         }
         if(enemy[i].getPosition().x<0)
         {
