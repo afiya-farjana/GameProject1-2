@@ -42,6 +42,8 @@ public:
     Font gameFont;
     Text scoreText;
     Text lifeText;
+    Text gameOver;
+    Text lastText;
     ostringstream scr;
     ostringstream lif;
     Text pauseText;
@@ -121,6 +123,16 @@ EasyGame::EasyGame()
     pauseText.setCharacterSize(60);
     pauseText.setPosition(150,240);
     pauseText.setString("Press Esc to continue");
+
+    gameOver.setFont(gameFont);
+    gameOver.setCharacterSize(60);
+    gameOver.setPosition(350,200);
+    gameOver.setString("Game Over");
+
+    lastText.setFont(gameFont);
+    lastText.setCharacterSize(40);
+    lastText.setPosition(350,300);
+    lastText.setString("Press Esc to Exit");
 
 }
 
@@ -254,6 +266,12 @@ void EasyGame::update()
             lif << "Life: " << life;
             lifeText.setString(lif.str());
             enemy[i].setPosition(960+rand()%300,ey[i]);
+            if(life <= 0)
+            {
+                  running = false;
+                  sleep(milliseconds(100));
+
+            }
         }
     }
     if(clk.getElapsedTime().asSeconds()>10)
@@ -267,6 +285,16 @@ void EasyGame::update()
 void EasyGame::render()
 {
     app.clear();
+    if(life <= 0)
+    {
+        app.draw(gameOver);
+        app.draw(lastText);
+        if (Keyboard::isKeyPressed(Keyboard::Escape))
+            {
+              app.close();
+            }
+
+    }
     if(pause)
     {
         app.draw(pauseText);
